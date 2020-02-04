@@ -7,7 +7,7 @@
             aws_secret_key: "{{aws_secret_access_key}}"
             region: "{{ region }}"
             filters:
-                "tag:Name": "{{ environment_name }}-ec2-instance"
+                "tag:group": "{{ ec2_group_name }}"
                 instance-state-name: [ "running" ]
           register: ec2_info
 
@@ -17,7 +17,7 @@
                 groups: "swarm_managers"
                 ansible_ssh_host: "{{ item.public_ip_address }}"
                 ansible_ssh_private_key_file: "{{ key_name }}"
-                ansible_ssh_user: "centos"
+                ansible_ssh_user: "{{ ssh_user }}"
                 instance_id: "{{ item.instance_id }}"
                 private_ip_address: "{{ item.private_ip_address }}"
           loop: "{{ ec2_info.instances }}" 
@@ -42,7 +42,7 @@
                 groups: "swarm_managers"
                 ansible_ssh_host: "{{ item.public_ip_address }}"
                 ansible_ssh_private_key_file: "{{ key_name }}"
-                ansible_ssh_user: "centos"
+                ansible_ssh_user: "{{ ssh_user }}"
                 instance_id: "{{ item.instance_id }}"
                 private_ip_address: "{{ item.private_ip_address }}"
           loop: 
@@ -57,7 +57,7 @@
             aws_secret_key: "{{aws_secret_access_key}}"
             region: "{{ region }}"
             filters:
-                "tag:Name": "{{ environment_name }}-ec2-instance"
+                "tag:group": "{{ ec2_group_name }}"
                 instance-state-name: [ "running" ]
           register: ec2_info
 
@@ -67,7 +67,7 @@
                 groups: "swarm_workers"
                 ansible_ssh_host: "{{ item.public_ip_address }}"
                 ansible_ssh_private_key_file: "{{ key_name }}"
-                ansible_ssh_user: "centos"
+                ansible_ssh_user: "{{ssh_user}}"
                 instance_id: "{{ item.instance_id }}"
                 private_ip_address: "{{ item.private_ip_address }}"
           loop: "{{ ec2_info.instances }}" 

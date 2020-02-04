@@ -9,7 +9,7 @@
         aws_secret_key: "{{aws_secret_access_key}}"
         region: "{{ region }}"
         filters:
-            "tag:Name": "{{ environment_name }}-ec2-instance"
+            "tag:group": "{{ ec2_group_name }}"
             instance-state-name: [ "running" ]
       register: ec2_info
 
