@@ -17,7 +17,7 @@
      shell: docker swarm join-token --quiet manager
      register: manager_token
  
-   - name: Get the worker join-token
+   - name: Get the Worker join-token
      shell: docker swarm join-token --quiet worker
      register: worker_token 
 

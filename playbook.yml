@@ -1,11 +1,47 @@
-# AWS playbook
----
+# AWS playbook to create a Docker Swarm Cluster on AWS/EC2
+# Playbook use these roles:
+# - aws_ec2_group  
+#   Deploy a group of ec2 instances (exact count on "group" tag) 
+#   and store instances in ansible in memory inventory (default group is 'aws_ec2')
+#  
+# - aws_ec2_custom_ebs_size
+#   Resize first ec2 attached ebs volume to a custom size. 
+#   Resizing is performed on a filtered list of ec2 instances ('ec2_selection_filter')
+#
+# - aws_ec2_custom_sg
+#   Set / Update an ec2 security group with specified rules ('sec_group_rules')
+#
+# - aws_ec2_swarm_nodes_definition
+#   Get a group of ec2 instances ('ec2_selection_filter'), check tags ('swarm_role') and build 
+#   a list of deployed swarm nodes. 
+#   Tag unassigned ec2 instances with correct swarm role: 
+#     - if managers list is empty, first unassigned ec2 instance is tagged as 'manager'
+#     - if manager is present, other unassigned ec2 instances are tagged as 'worker' 
+#   Store swarm manager instances in ansible in memory inventory with group 'swarm_managers'
+#   Store swarm worker instances in ansible in memory inventory with group 'swarm_workers' 
+#
+# - docker_tls
+#   Centos docker installation, including TLS support to only accept connections from clients 
+#   providing a certificate trusted by our CA
+#
+# - swarm_managers
+#   Check if swarm cluster is already active and, if required, initialized it.
+#   Manager and Worker join-tokens are stored in ansible in-memory inventory in manager
+#   instance details  
+#
+# - swarm_workers
+#   Check if docker node is already configured as swarm worker and, if required, configure it to
+#   join specified cluster (swarm_manager_ip / swarm_join_token)   
+#
 
+---
+    # ec2 deployment & configuration
     - hosts: localhost
       connection: local
       gather_facts: False
       
       vars:
+        # required by aws_ec2_group role
         key_name: ec2_key
         ssh_user: centos
 
@@ -16,6 +52,16 @@
         ec2_group_name: "{{ environment_name }}-group"
         instance_count: 2
 
+        # required by aws_ec2_custom_ebs_size role 
+        # required by aws_ec2_swarm_nodes_definition role
+        ec2_selection_filter: 
+            "tag:group": "{{ ec2_group_name }}"
+            instance-state-name: [ "running" ]
+
+        # required by aws_ec2_custom_ebs_size role 
+        ebs_size: 40
+
+        # required by aws_ec2_custom_sg
         sec_group: "{{ environment_name }}-sg"
         sec_group_rules:
                 - proto: tcp
@@ -33,16 +79,13 @@
                     - 2377
                   group_name: "{{ sec_group }}"
                   rule_desc: allow docker swarm             
-
-  
-        ebs_size: 10
-
       roles:
         - aws_ec2_group
         - aws_ec2_custom_ebs_size
         - aws_ec2_custom_sg
         - aws_ec2_swarm_nodes_definition
 
+    # docker installation    
     - hosts: aws_ec2
       remote_user: centos
       gather_facts: No
@@ -51,6 +94,7 @@
       roles:
         - docker_tls
 
+    # swarm cluster init       
     - hosts: swarm_managers
       remote_user: centos
       gather_facts: No
@@ -59,11 +103,16 @@
       roles:
         - swarm_managers
 
+    # swarm workers join    
     - hosts: swarm_workers
       remote_user: centos
       gather_facts: No
       become: yes   
       
+      vars:
+        swarm_manager_ip: "{{hostvars[groups['swarm_managers'][0]]['private_ip_address']}}"
+        swarm_join_token: "{{hostvars[groups['swarm_managers'][0]]['worker_token']['stdout']}}"   
+
       roles:
         - swarm_workers
 

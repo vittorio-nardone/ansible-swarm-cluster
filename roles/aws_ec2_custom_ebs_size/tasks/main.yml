@@ -8,9 +8,7 @@
         aws_access_key: "{{aws_access_key_id}}"
         aws_secret_key: "{{aws_secret_access_key}}"
         region: "{{ region }}"
-        filters:
-            "tag:group": "{{ ec2_group_name }}"
-            instance-state-name: [ "running" ]
+        filters: "{{ ec2_selection_filter }}"
       register: ec2_info
 
     - name: Get Volume Facts

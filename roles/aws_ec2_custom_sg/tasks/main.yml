@@ -1,9 +1,6 @@
 ---        
         
-- name: Set a custom security group
-  block:
-
-    - name: Create security group
+    - name: Set / Update security group
       ec2_group:
         name: "{{ sec_group }}"
         description: "Sec group for {{ environment_name }}"
