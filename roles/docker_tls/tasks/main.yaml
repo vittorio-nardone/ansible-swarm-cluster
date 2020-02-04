@@ -1,0 +1,57 @@
+---
+
+  - name: Install Docker
+    block:
+            - name: Install yum utils      
+              yum:
+                name: yum-utils
+                state: latest
+        
+            - name: Install device-mapper-persistent-data
+              yum:
+                name: device-mapper-persistent-data
+                state: latest
+                      
+            - name: Install lvm2
+              yum:
+                name: lvm2
+                state: latest
+                       
+            - name: Add Docker repo
+              get_url:
+                url: https://download.docker.com/linux/centos/docker-ce.repo
+                dest: /etc/yum.repos.d/docker-ce.repo             
+        
+            - name: Install Docker
+              package:
+                name: docker-ce
+                state: latest
+
+            - name: Configure Docker for TLS
+              script: docker_tls.sh  `curl -s http://169.254.169.254/latest/meta-data/public-hostname`
+              become: false
+              
+            - name: Copy Docker service file to hosts
+              copy:
+                src: docker.service
+                dest: /usr/lib/systemd/system/docker.service
+                owner: root
+                group: root
+                mode: '0644'
+
+            - name: Store certs files locally 
+              fetch:
+                  src: .docker/{{item}}
+                  dest: ~/.docker/certs/{{inventory_hostname}}/{{item}}
+                  flat: yes
+              become: false
+              with_items:
+                - 'ca.pem'
+                - 'cert.pem'
+                - 'key.pem'
+                   
+            - name: Start Docker service
+              service:
+                name: docker
+                state: started
+                enabled: yes

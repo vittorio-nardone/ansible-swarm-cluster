@@ -1,0 +1,65 @@
+# AWS playbook
+---
+
+    - hosts: localhost
+      connection: local
+      gather_facts: False
+      
+      vars:
+        key_name: ec2_key
+        region: eu-west-1
+        image: ami-0047b5df4f5c2a90e 
+        environment_name: "my-centos-swarm"
+
+        sec_group: "{{ environment_name }}-sec"
+        sec_group_rules:
+                - proto: tcp
+                  ports:
+                    - 22
+                  cidr_ip: 0.0.0.0/0
+                  rule_desc: allow all on ssh port
+                - proto: tcp
+                  ports:
+                    - 2376
+                  cidr_ip: 0.0.0.0/0
+                  rule_desc: allow docker client  
+                - proto: tcp
+                  ports:
+                    - 2377
+                  group_name: "{{ sec_group }}"
+                  rule_desc: allow docker swarm             
+
+        instance_count: 3
+        ebs_size: 10
+
+      roles:
+        - aws_ec2_group
+        - aws_ec2_custom_ebs_size
+        - aws_ec2_custom_sg
+        - aws_ec2_swarm_nodes_definition
+
+    - hosts: aws_ec2
+      remote_user: centos
+      gather_facts: No
+      become: yes
+
+      roles:
+        - docker_tls
+
+    - hosts: swarm_managers
+      remote_user: centos
+      gather_facts: No
+      become: yes   
+      
+      roles:
+        - swarm_managers
+
+    - hosts: swarm_workers
+      remote_user: centos
+      gather_facts: No
+      become: yes   
+      
+      roles:
+        - swarm_workers
+
+

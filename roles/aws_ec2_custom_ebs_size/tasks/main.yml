@@ -1,0 +1,32 @@
+---        
+        
+- name: Resizing EBS volumes
+  block:
+
+    - name: Get instances information
+      ec2_instance_info:
+        aws_access_key: "{{aws_access_key_id}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
+        region: "{{ region }}"
+        filters:
+            "tag:Name": "{{ environment_name }}-ec2-instance"
+            instance-state-name: [ "running" ]
+      register: ec2_info
+
+    - name: Get Volume Facts
+      ec2_vol_info:
+        aws_access_key: "{{aws_access_key_id}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
+        region: "{{ region }}"
+        filters:
+          volume-id: "{{ item.block_device_mappings.0.ebs.volume_id }}"   
+      loop: "{{ ec2_info.instances }}"
+      register: ec2_volumes_list
+
+    - name: Resize EC2 EBS volumes
+      block:    
+        - name: Volumes ID
+          command: >
+            aws ec2 modify-volume --size {{ ebs_size }} --region {{ region }} --volume-id {{ item.volumes.0.id }} 
+          loop: "{{ ec2_volumes_list.results }}"
+          when: item.volumes.0.size != ebs_size

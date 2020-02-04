@@ -1,0 +1,14 @@
+---        
+        
+- name: Set a custom security group
+  block:
+
+    - name: Create security group
+      ec2_group:
+        name: "{{ sec_group }}"
+        description: "Sec group for {{ environment_name }}"
+        region: "{{ region }}"
+        aws_access_key: "{{aws_access_key_id}}"
+        aws_secret_key: "{{aws_secret_access_key}}"
+        rules: "{{ sec_group_rules }}"  
+      register: result_sec_group

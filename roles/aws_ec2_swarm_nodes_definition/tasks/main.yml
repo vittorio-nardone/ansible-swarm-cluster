@@ -1,0 +1,88 @@
+---
+- name: Define Swarm nodes roles 
+  block:     
+        - name: Get instances information
+          ec2_instance_info:
+            aws_access_key: "{{aws_access_key_id}}"
+            aws_secret_key: "{{aws_secret_access_key}}"
+            region: "{{ region }}"
+            filters:
+                "tag:Name": "{{ environment_name }}-ec2-instance"
+                instance-state-name: [ "running" ]
+          register: ec2_info
+
+        - name: Set the manager inventory 
+          add_host: 
+                hostname: "{{ item.public_dns_name }}"
+                groups: "swarm_managers"
+                ansible_ssh_host: "{{ item.public_ip_address }}"
+                ansible_ssh_private_key_file: "{{ key_name }}"
+                ansible_ssh_user: "centos"
+                instance_id: "{{ item.instance_id }}"
+                private_ip_address: "{{ item.private_ip_address }}"
+          loop: "{{ ec2_info.instances }}" 
+          when: (item.tags.swarm_role is defined) and (item.tags.swarm_role == 'manager')
+
+        - name: Select a new manager and update tags
+          ec2_tag:
+                aws_access_key: "{{aws_access_key_id}}"
+                aws_secret_key: "{{aws_secret_access_key}}"
+                region: "{{ region }}"
+                resource: "{{ item.instance_id }}"
+                state: present
+                tags:
+                    swarm_role: manager 
+          loop: 
+            - "{{ec2_info.instances[0]}}"
+          when: (groups['swarm_managers'] is not defined)
+
+        - name: Add new manager to inventory
+          add_host: 
+                hostname: "{{ item.public_dns_name }}"
+                groups: "swarm_managers"
+                ansible_ssh_host: "{{ item.public_ip_address }}"
+                ansible_ssh_private_key_file: "{{ key_name }}"
+                ansible_ssh_user: "centos"
+                instance_id: "{{ item.instance_id }}"
+                private_ip_address: "{{ item.private_ip_address }}"
+          loop: 
+            - "{{ec2_info.instances[0]}}"
+          when: (groups['swarm_managers'] is not defined)
+
+############
+
+        - name: Get instances information
+          ec2_instance_info:
+            aws_access_key: "{{aws_access_key_id}}"
+            aws_secret_key: "{{aws_secret_access_key}}"
+            region: "{{ region }}"
+            filters:
+                "tag:Name": "{{ environment_name }}-ec2-instance"
+                instance-state-name: [ "running" ]
+          register: ec2_info
+
+        - name: Set the worker inventory 
+          add_host: 
+                hostname: "{{ item.public_dns_name }}"
+                groups: "swarm_workers"
+                ansible_ssh_host: "{{ item.public_ip_address }}"
+                ansible_ssh_private_key_file: "{{ key_name }}"
+                ansible_ssh_user: "centos"
+                instance_id: "{{ item.instance_id }}"
+                private_ip_address: "{{ item.private_ip_address }}"
+          loop: "{{ ec2_info.instances }}" 
+          when: (item.tags.swarm_role is not defined) or 
+                ((item.tags.swarm_role is defined) and (item.tags.swarm_role == 'worker'))
+
+        - name: Update worker tags
+          ec2_tag:
+                aws_access_key: "{{aws_access_key_id}}"
+                aws_secret_key: "{{aws_secret_access_key}}"
+                region: "{{ region }}"
+                resource: "{{ item.instance_id }}"
+                state: present
+                tags:
+                    swarm_role: worker 
+          loop: "{{ ec2_info.instances }}" 
+          when: (item.tags.swarm_role is not defined) or 
+                ((item.tags.swarm_role is defined) and (item.tags.swarm_role == 'worker'))
