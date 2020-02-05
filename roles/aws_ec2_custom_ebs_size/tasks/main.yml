@@ -22,12 +22,10 @@
       register: ec2_volumes_list
 
     - name: Resize EC2 EBS volumes
-      block:    
-        - name: Volumes ID
-          environment:
-            AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
-            AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
-          command: >
-            aws ec2 modify-volume --size {{ ebs_size }} --region {{ region }} --volume-id {{ item.volumes.0.id }} 
-          loop: "{{ ec2_volumes_list.results }}"
-          when: item.volumes.0.size != ebs_size
+      environment:
+        AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+        AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+      command: >
+        aws ec2 modify-volume --size {{ ebs_size }} --region {{ region }} --volume-id {{ item.volumes.0.id }} 
+      loop: "{{ ec2_volumes_list.results }}"
+      when: item.volumes.0.size != ebs_size
