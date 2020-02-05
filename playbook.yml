@@ -1,4 +1,4 @@
-# AWS playbook to create a Docker Swarm Cluster on AWS/EC2
+# Ansible playbook to create a Docker Swarm Cluster on AWS/EC2
 # Playbook use these roles:
 # - aws_ec2_group  
 #   Deploy a group of ec2 instances (exact count on "group" tag) 
@@ -85,14 +85,21 @@
         - aws_ec2_custom_sg
         - aws_ec2_swarm_nodes_definition
 
+      tags: ['never', 'deploy']
+
     # docker installation    
     - hosts: aws_ec2
       remote_user: centos
       gather_facts: No
       become: yes
 
+      vars:
+        docker_certs_folder: "docker_certs"
+
       roles:
         - docker_tls
+      
+      tags: ['never', 'deploy']
 
     # swarm cluster init       
     - hosts: swarm_managers
@@ -102,6 +109,8 @@
       
       roles:
         - swarm_managers
+
+      tags: ['never', 'deploy']
 
     # swarm workers join    
     - hosts: swarm_workers
@@ -115,5 +124,20 @@
 
       roles:
         - swarm_workers
+
+      tags: ['never', 'deploy']
+
+    - hosts: swarm_managers
+      connection: local
+      gather_facts: False
+
+      tasks:
+        - debug:
+            msg: "Connect to: {{inventory_hostname}}"
+        - local_action: copy content="{{inventory_hostname}}" dest="cluster-manager.host"
+      run_once: true
+
+      tags: ['never', 'deploy']
+
 
 
