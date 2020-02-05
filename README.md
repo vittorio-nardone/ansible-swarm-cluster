@@ -8,23 +8,23 @@
  These roles are defined:
  - `aws_ec2_group` 
    Deploy a group of ec2 instances (exact count on "group" tag) 
-   and store instances in ansible in memory inventory (default group is * *aws_ec2* *)
+   and store instances in ansible in memory inventory (default group is *aws_ec2*)
   
  - `aws_ec2_custom_ebs_size`
    Resize first ec2 attached ebs volume to a custom size. 
-   Resizing is performed on a filtered list of ec2 instances (* *ec2_selection_filter* *)
+   Resizing is performed on a filtered list of ec2 instances (*ec2_selection_filter*)
 
  - `aws_ec2_custom_sg`
-   Set / Update an ec2 security group with specified rules (* *sec_group_rules* *)
+   Set / Update an ec2 security group with specified rules (*sec_group_rules*)
 
  - `aws_ec2_swarm_nodes_definition`
-   Get a group of ec2 instances (* *ec2_selection_filter* *), check tags (* *swarm_role* *) and build 
+   Get a group of ec2 instances (*ec2_selection_filter*), check tags (*swarm_role*) and build 
    a list of deployed swarm nodes. 
    Tag unassigned ec2 instances with correct swarm role: 
-     - if managers list is empty, first unassigned ec2 instance is tagged as * *manager* *
-     - if manager is present, other unassigned ec2 instances are tagged as * *worker* * 
-   Store swarm manager instances in ansible in memory inventory with group * *swarm_managers* *
-   Store swarm worker instances in ansible in memory inventory with group * *swarm_workers* * 
+     - if managers list is empty, first unassigned ec2 instance is tagged as *manager*
+     - if manager is present, other unassigned ec2 instances are tagged as *worker* 
+   Store swarm manager instances in ansible in memory inventory with group *swarm_managers*
+   Store swarm worker instances in ansible in memory inventory with group *swarm_workers* 
 
  - `docker`
    A generic Docker installation role
@@ -45,9 +45,9 @@
 ## Setup & Run
 
 If you need to install Ansible and dependencies, a generic way is:
-    sudo apt install python
-    sudo apt install python-pip
-    pip install boto boto3 ansible
+  sudo apt install python
+  sudo apt install python-pip
+  pip install boto boto3 ansible
 
 To run this playbook you need:
 - a valid AWS Access Key & Secret Key. 
@@ -106,5 +106,9 @@ Docker Swarm cluster is configured to use private IPs.
 - Scale-out is correctly supported by playbook. If `instance_count` is incremented, new EC2 docker nodes are deployed and joined to Swarm cluster as workers.
 - Scale-in is not supported by this playbook.
 
+## CI Pipeline
 
+Travis CI is configured to perform build tests at every code push to repository:
+- code linting, using `ansible-lint`
+- `docker` role, using `molecule`  
 
