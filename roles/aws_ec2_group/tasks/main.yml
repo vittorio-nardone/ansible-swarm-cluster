@@ -7,16 +7,16 @@
               name: "{{ key_name }}"
               key_material: "{{ lookup('file', '{{ key_name }}.pub') }}"
               region: "{{ region }}"
-              aws_access_key: "{{aws_access_key_id}}"
-              aws_secret_key: "{{aws_secret_access_key}}"
+              aws_access_key: "{{ aws_access_key_id }}"
+              aws_secret_key: "{{ aws_secret_access_key }}"
     
           - name: Create security group
             ec2_group:
               name: "{{ sec_group }}"
               description: "Sec group for {{ environment_name }}"
               region: "{{ region }}"
-              aws_access_key: "{{aws_access_key_id}}"
-              aws_secret_key: "{{aws_secret_access_key}}"
+              aws_access_key: "{{ aws_access_key_id }}"
+              aws_secret_key: "{{ aws_secret_access_key }}"
               rules:
                 - proto: tcp
                   ports:
@@ -27,8 +27,8 @@
     
           - name: Provision instance(s)
             ec2:
-              aws_access_key: "{{aws_access_key_id}}"
-              aws_secret_key: "{{aws_secret_access_key}}"
+              aws_access_key: "{{ aws_access_key_id }}"
+              aws_secret_key: "{{ aws_secret_access_key }}"
               key_name: "{{ key_name }}"
               instance_tags:
                 group: "{{ ec2_group_name }}"
@@ -43,8 +43,8 @@
  
           - name: Get instances information
             ec2_instance_info:
-              aws_access_key: "{{aws_access_key_id}}"
-              aws_secret_key: "{{aws_secret_access_key}}"
+              aws_access_key: "{{ aws_access_key_id }}"
+              aws_secret_key: "{{ aws_secret_access_key }}"
               region: "{{ region }}"
               filters:
                 "tag:group": "{{ ec2_group_name }}"

@@ -5,17 +5,17 @@
             - name: Install yum utils      
               yum:
                 name: yum-utils
-                state: latest
+                 #state: latest
         
             - name: Install device-mapper-persistent-data
               yum:
                 name: device-mapper-persistent-data
-                state: latest
+                 #state: latest
                       
             - name: Install lvm2
               yum:
                 name: lvm2
-                state: latest
+                 #state: latest
                        
             - name: Add Docker repo
               get_url:
@@ -25,7 +25,7 @@
             - name: Install Docker
               package:
                 name: docker-ce
-                state: latest
+                 #state: latest
 
             - name: Configure Docker for TLS
               script: docker_tls.sh  `curl -s http://169.254.169.254/latest/meta-data/public-hostname`
@@ -41,8 +41,8 @@
 
             - name: Store certs files locally 
               fetch:
-                  src: .docker/{{item}}
-                  dest: "{{docker_certs_folder}}/{{inventory_hostname}}/{{item}}"
+                  src: .docker/{{ item }}
+                  dest: "{{ docker_certs_folder }}/{{ inventory_hostname }}/{{ item }}"
                   flat: yes
               become: false
               with_items:

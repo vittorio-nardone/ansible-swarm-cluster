@@ -119,8 +119,8 @@
       become: yes   
       
       vars:
-        swarm_manager_ip: "{{hostvars[groups['swarm_managers'][0]]['private_ip_address']}}"
-        swarm_join_token: "{{hostvars[groups['swarm_managers'][0]]['worker_token']['stdout']}}"   
+        swarm_manager_ip: "{{ hostvars[groups['swarm_managers'][0]]['private_ip_address'] }}"
+        swarm_join_token: "{{ hostvars[groups['swarm_managers'][0]]['worker_token']['stdout'] }}"   
 
       roles:
         - swarm_workers
@@ -132,10 +132,11 @@
       gather_facts: False
 
       tasks:
-        - debug:
-            msg: "Connect to: {{inventory_hostname}}"
-        - local_action: copy content="{{inventory_hostname}}" dest="cluster-manager.host"
-      run_once: true
+        - name: Save Manager hostname    
+          shell: copy content="{{ inventory_hostname }}" dest="cluster-manager.host"
+          delegate_to: localhost
+          run_once: true
+          changed_when: false
 
       tags: ['never', 'deploy']
 

@@ -5,16 +5,16 @@
 
     - name: Get instances information
       ec2_instance_info:
-        aws_access_key: "{{aws_access_key_id}}"
-        aws_secret_key: "{{aws_secret_access_key}}"
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{ region }}"
         filters: "{{ ec2_selection_filter }}"
       register: ec2_info
 
     - name: Get Volume Facts
       ec2_vol_info:
-        aws_access_key: "{{aws_access_key_id}}"
-        aws_secret_key: "{{aws_secret_access_key}}"
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
         region: "{{ region }}"
         filters:
           volume-id: "{{ item.block_device_mappings.0.ebs.volume_id }}"   

@@ -3,6 +3,7 @@
     - name: Check if Swarm has already been Initialized
       shell: docker info --format \{\{.Swarm.LocalNodeState\}\}\
       register: swarm_status 
+      changed_when: false
 
     - name: Add Workers to the Swarm
       shell: "docker swarm join --token {{ swarm_join_token }} {{ swarm_manager_ip }}:2377"

@@ -3,8 +3,8 @@
   block:     
         - name: Get instances information
           ec2_instance_info:
-            aws_access_key: "{{aws_access_key_id}}"
-            aws_secret_key: "{{aws_secret_access_key}}"
+            aws_access_key: "{{ aws_access_key_id }}"
+            aws_secret_key: "{{ aws_secret_access_key }}"
             region: "{{ region }}"
             filters: "{{ ec2_selection_filter }}"
           register: ec2_info
@@ -23,15 +23,15 @@
 
         - name: Select a new manager and update tags
           ec2_tag:
-                aws_access_key: "{{aws_access_key_id}}"
-                aws_secret_key: "{{aws_secret_access_key}}"
+                aws_access_key: "{{ aws_access_key_id }}"
+                aws_secret_key: "{{ aws_secret_access_key }}"
                 region: "{{ region }}"
                 resource: "{{ item.instance_id }}"
                 state: present
                 tags:
                     swarm_role: manager 
           loop: 
-            - "{{ec2_info.instances[0]}}"
+            - "{{ ec2_info.instances[0] }}"
           when: (groups['swarm_managers'] is not defined)
 
         - name: Add new manager to inventory
@@ -44,15 +44,15 @@
                 instance_id: "{{ item.instance_id }}"
                 private_ip_address: "{{ item.private_ip_address }}"
           loop: 
-            - "{{ec2_info.instances[0]}}"
+            - "{{ ec2_info.instances[0] }}"
           when: (groups['swarm_managers'] is not defined)
 
 ############
 
         - name: Get instances information
           ec2_instance_info:
-            aws_access_key: "{{aws_access_key_id}}"
-            aws_secret_key: "{{aws_secret_access_key}}"
+            aws_access_key: "{{ aws_access_key_id }}"
+            aws_secret_key: "{{ aws_secret_access_key }}"
             region: "{{ region }}"
             filters: "{{ ec2_selection_filter }}"
           register: ec2_info
@@ -63,7 +63,7 @@
                 groups: "swarm_workers"
                 ansible_ssh_host: "{{ item.public_ip_address }}"
                 ansible_ssh_private_key_file: "{{ key_name }}"
-                ansible_ssh_user: "{{ssh_user}}"
+                ansible_ssh_user: "{{ ssh_user }}"
                 instance_id: "{{ item.instance_id }}"
                 private_ip_address: "{{ item.private_ip_address }}"
           loop: "{{ ec2_info.instances }}" 
@@ -72,8 +72,8 @@
 
         - name: Update worker tags
           ec2_tag:
-                aws_access_key: "{{aws_access_key_id}}"
-                aws_secret_key: "{{aws_secret_access_key}}"
+                aws_access_key: "{{ aws_access_key_id }}"
+                aws_secret_key: "{{ aws_secret_access_key }}"
                 region: "{{ region }}"
                 resource: "{{ item.instance_id }}"
                 state: present
