@@ -7,7 +7,7 @@
  This Ansible playbook creates a Docker Swarm Cluster on AWS/EC2 with CentOs.  
  These roles are defined:
  - `aws_ec2_group` 
-   Deploy a group of ec2 instances (exact count on "group" tag) 
+   Deploy a group of ec2 instances (exact count on *group* tag) 
    and store instances in ansible in memory inventory (default group is *aws_ec2*)
   
  - `aws_ec2_custom_ebs_size`
@@ -23,6 +23,7 @@
    Tag unassigned ec2 instances with correct swarm role: 
      - if managers list is empty, first unassigned ec2 instance is tagged as *manager*
      - if manager is present, other unassigned ec2 instances are tagged as *worker* 
+   
    Store swarm manager instances in ansible in memory inventory with group *swarm_managers*
    Store swarm worker instances in ansible in memory inventory with group *swarm_workers* 
 
@@ -105,7 +106,7 @@ Docker Swarm cluster is configured to use private IPs.
 ## Notes
 
 - Scale-out is correctly supported by playbook. If `instance_count` is incremented, new EC2 docker nodes are deployed and joined to Swarm cluster as workers.
-- Scale-in is not supported by this playbook.
+- Scale-in is NOT supported by this playbook.
 
 ## CI Pipeline
 
