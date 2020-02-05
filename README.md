@@ -8,7 +8,7 @@
  These roles are defined:
  - `aws_ec2_group` 
    Deploy a group of ec2 instances (exact count on *group* tag) 
-   and store instances in ansible in memory inventory (default group is *aws_ec2*)
+   and store instances in ansible in-memory inventory (default group is *aws_ec2*)
   
  - `aws_ec2_custom_ebs_size`
    Resize first ec2 attached ebs volume to a custom size. 
@@ -24,8 +24,7 @@
      - if managers list is empty, first unassigned ec2 instance is tagged as *manager*
      - if manager is present, other unassigned ec2 instances are tagged as *worker* 
    
-   Store swarm manager instances in ansible in memory inventory with group *swarm_managers*
-   Store swarm worker instances in ansible in memory inventory with group *swarm_workers* 
+   Store swarm manager instances in ansible in-memory inventory with group *swarm_managers* and workers with group *swarm_workers*. 
 
  - `docker`
    A generic Docker installation role
