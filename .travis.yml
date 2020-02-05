@@ -8,5 +8,5 @@ install:
 
 # command to run tests
 script:
-- ansible-lint playbook.yml -x 201,305 -v
+- ansible-lint playbook.yml -x 201,305,504 -v
 
