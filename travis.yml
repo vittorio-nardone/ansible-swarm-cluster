@@ -1,0 +1,12 @@
+language: python
+python:
+- "3.6"
+
+# command to install dependencies
+install:
+- pip install -r tests/test-requirements.txt
+
+# command to run tests
+script:
+- ansible-lint playbook.yml -x 201,305 -v
+
