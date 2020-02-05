@@ -8,26 +8,29 @@
  These roles are defined:
  - `aws_ec2_group` 
    Deploy a group of ec2 instances (exact count on "group" tag) 
-   and store instances in ansible in memory inventory (default group is 'aws_ec2')
+   and store instances in ansible in memory inventory (default group is * *aws_ec2* *)
   
  - `aws_ec2_custom_ebs_size`
    Resize first ec2 attached ebs volume to a custom size. 
-   Resizing is performed on a filtered list of ec2 instances ('ec2_selection_filter')
+   Resizing is performed on a filtered list of ec2 instances (* *ec2_selection_filter* *)
 
  - `aws_ec2_custom_sg`
-   Set / Update an ec2 security group with specified rules ('sec_group_rules')
+   Set / Update an ec2 security group with specified rules (* *sec_group_rules* *)
 
  - `aws_ec2_swarm_nodes_definition`
-   Get a group of ec2 instances ('ec2_selection_filter'), check tags ('swarm_role') and build 
+   Get a group of ec2 instances (* *ec2_selection_filter* *), check tags (* *swarm_role* *) and build 
    a list of deployed swarm nodes. 
    Tag unassigned ec2 instances with correct swarm role: 
-     - if managers list is empty, first unassigned ec2 instance is tagged as 'manager'
-     - if manager is present, other unassigned ec2 instances are tagged as 'worker' 
-   Store swarm manager instances in ansible in memory inventory with group 'swarm_managers'
-   Store swarm worker instances in ansible in memory inventory with group 'swarm_workers' 
+     - if managers list is empty, first unassigned ec2 instance is tagged as * *manager* *
+     - if manager is present, other unassigned ec2 instances are tagged as * *worker* * 
+   Store swarm manager instances in ansible in memory inventory with group * *swarm_managers* *
+   Store swarm worker instances in ansible in memory inventory with group * *swarm_workers* * 
+
+ - `docker`
+   A generic Docker installation role
 
  - `docker_tls`
-   Centos docker installation, including TLS support to only accept connections from clients 
+   Docker TLS configuration to only accept connections from clients 
    providing a certificate trusted by our CA
 
  - `swarm_managers`

@@ -20,8 +20,11 @@
 #   Store swarm manager instances in ansible in memory inventory with group 'swarm_managers'
 #   Store swarm worker instances in ansible in memory inventory with group 'swarm_workers' 
 #
+# - docker
+#   A generic Docker installation role
+#
 # - docker_tls
-#   Centos docker installation, including TLS support to only accept connections from clients 
+#   Docker TLS configuration to only accept connections from clients 
 #   providing a certificate trusted by our CA
 #
 # - swarm_managers
@@ -97,6 +100,7 @@
         docker_certs_folder: "docker_certs"
 
       roles:
+        - docker
         - docker_tls
       
       tags: ['never', 'deploy']
@@ -133,8 +137,7 @@
 
       tasks:
         - name: Save Manager hostname    
-          shell: copy content="{{ inventory_hostname }}" dest="cluster-manager.host"
-          delegate_to: localhost
+          local_action: copy content="{{ inventory_hostname }}" dest="cluster-manager.host"
           run_once: true
           changed_when: false
 
