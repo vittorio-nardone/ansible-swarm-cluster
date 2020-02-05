@@ -3,3 +3,5 @@
 ## pip install --requirement=test-requirements.txt
 ##
 ansible-lint
+molecule
+docker-py
