@@ -42,7 +42,7 @@
             - name: Store certs files locally 
               fetch:
                   src: .docker/{{item}}
-                  dest: ~/.docker/certs/{{inventory_hostname}}/{{item}}
+                  dest: "{{docker_certs_folder}}/{{inventory_hostname}}/{{item}}"
                   flat: yes
               become: false
               with_items:
