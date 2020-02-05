@@ -110,5 +110,5 @@ Docker Swarm cluster is configured to use private IPs.
 
 Travis CI is configured to perform build tests at every code push to repository:
 - code linting, using `ansible-lint`
-- `docker` role, using `molecule`  
+- `docker` role, using `molecule` to check if `docker-ce` package is successfully installed 
 
