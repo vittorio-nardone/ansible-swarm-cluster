@@ -1,9 +1,11 @@
  # Ansible playbook and roles to create a CentOs Docker Swarm Cluster on AWS/EC2
 
+[![CI](https://travis-ci.com/vittorio-nardone/ansible-swarm-cluster.svg?branch=master)](https://travis-ci.org/vittorio-nardone/ansible-swarm-cluster)
+
  ## Description
  This Ansible playbook creates a Docker Swarm Cluster on AWS/EC2 with CentOs.  
  These roles are defined:
- - `aws_ec2_group ` 
+ - `aws_ec2_group` 
    Deploy a group of ec2 instances (exact count on "group" tag) 
    and store instances in ansible in memory inventory (default group is 'aws_ec2')
   
@@ -66,7 +68,7 @@ Finally, to run playbook use:
 
     ansible-playbook playbook.yml --ask-vault-pass --tags deploy
 
-## Use deployed Docker Swarm Cluster
+## Use deployed Docker Swarm cluster
 
 Playbook creates the file `cluster-manager.host` to store Swarm manager public hostname and folder `docker_certs` to store TLS certificates.
 
