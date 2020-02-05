@@ -45,9 +45,10 @@
 ## Setup & Run
 
 If you need to install Ansible and dependencies, a generic way is:
-  sudo apt install python
-  sudo apt install python-pip
-  pip install boto boto3 ansible
+
+    sudo apt install python
+    sudo apt install python-pip
+    pip install boto boto3 ansible
 
 To run this playbook you need:
 - a valid AWS Access Key & Secret Key. 
