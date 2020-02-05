@@ -1,6 +1,7 @@
  # Ansible playbook and roles to create a CentOs Docker Swarm Cluster on AWS/EC2
 
-[![CI](https://travis-ci.com/vittorio-nardone/ansible-swarm-cluster.svg?branch=master)](https://travis-ci.org/vittorio-nardone/ansible-swarm-cluster)
+[![CI](https://travis-ci.com/vittorio-nardone/ansible-swarm-cluster.svg?branch=master)](https://travis-ci.com/vittorio-nardone/ansible-swarm-cluster)
+
 
  ## Description
  This Ansible playbook creates a Docker Swarm Cluster on AWS/EC2 with CentOs.  
