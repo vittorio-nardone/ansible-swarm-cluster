@@ -1,0 +1,25 @@
+---
+#  You’ll need to export your AWS access key, secret access key and region to test
+#  export EC2_REGION=eu-west-2
+#  export AWS_ACCESS_KEY_ID=ACCESSKEY
+#  export AWS_SECRET_ACCESS_KEY=SECRETACCESSKEY 
+dependency:
+  name: galaxy
+driver:
+  name: ec2
+lint:
+  name: yamllint
+platforms:
+  - name: instance
+    image: ami-0047b5df4f5c2a90e     # check this
+    instance_type: t2.micro
+    vpc_subnet_id: subnet-9248d8c8   # check this
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+    enabled: False
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
