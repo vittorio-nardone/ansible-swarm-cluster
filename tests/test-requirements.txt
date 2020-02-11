@@ -4,6 +4,6 @@
 ##
 ansible-lint
 molecule
-docker-py
+# docker-py
 boto 
 boto3
